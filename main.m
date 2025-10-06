@@ -18,7 +18,7 @@ clc
 disp('--- Algorithms ---');
 
 fid = fopen( 'results.txt', 'wt' );
-fprintf( fid, '%3s %13s %8s %3s %8s %10s %10s %10s %10s\r\n','#i', '#Input','Filter', 'WS', '#PUAlg','Duration', '#Residue', '#BranchCut', 'RMSE');
+fprintf( fid, '%3s %13s %8s %3s %10s %10s %10s %10s %10s %10s %8s %10s %10s %10s %10s\r\n','#i', '#Input','Filter', 'WS', 'RMSE_int', 'PSNR_int', 'EQP_int', 'EPI_int', 'SPD_int', 'nres_int', '#PUAlg','Duration_PU', '#Residue', '#BranchCut', 'RMSE_PU');
 
 iteration = 0;
 for i = 10:10
@@ -48,7 +48,7 @@ for i = 10:10
     subplot(312);imagesc(corrimage);title('Input Correlation Map');
     subplot(313);mesh(surfimage);title('Groundtruth Unwrapped Map');
 
-    for j = 0:2
+    for j = 2:2
         %% Interferogram Despeckling
         % 0 - No Despeckling
         % 1 - Mean
@@ -58,11 +58,14 @@ for i = 10:10
         % 5 - Lee
         % 6 - Kuan
         % 7 - Kuwahara
+        % 8 - NL InSAR (only Linux and Windows x32)
+        % 9 - InSAR-BM3D (only Linux)
         numberofDespAlgo = j;
 
-        for m = 5:2:7
-            
+        for m = 5:2:5
             windowsize = m;
+
+            % Despeckling
             [DESPtype desp_int] = DespGen(numberofDespAlgo, phaseimage, windowsize, fid);
             figure_map = figure;
             imagesc(desp_int);title(['Despeckled Interferogram, WindowSize = ' num2str(windowsize) ', Algo Number = ' num2str(numberofDespAlgo)]);
@@ -74,9 +77,11 @@ for i = 10:10
             name=name+DESPtype+winno+imgno;
             saveas(figure_map,name+"desp_int.svg")
 
-            [rmse_int PSNR_int] = param_calculations_int(numberofinputimage, desp_int, fid)
+            % Calculation of Parameters
+            [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(numberofinputimage, desp_int, fid);
             maskimage = 1;
             qualmap = 1;
+            I = [iteration; i; j; m; k; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
     
             for k = 1:1
                 %% Phase Unwrapping Algorithms
@@ -108,10 +113,11 @@ for i = 10:10
                     continue;
                 end
                 if k==3 
-    %                 continue;
+                    continue;
                 end
     
                 numberofPUAlgo = k;
+                % Phase Unwrapping
                 tic;
                 [PUAlg, resmap, BCmap, unwrappedmap] = PUalgorithms(numberofPUAlgo, desp_int, maskimage, qualmap);
                 duration = toc;
@@ -132,7 +138,7 @@ for i = 10:10
                 iteration = iteration +1;
                 A = [iteration; i; j; m; k; resnumber; BClength; rmse_uW; duration];
     
-                fprintf( fid, '%3d %13s %8s %3d %8s %10f %10d %10d %10f\r\n', iteration, Inpimage, DESPtype, windowsize, PUAlg, duration, resnumber, BClength, rmse_uW);
+                fprintf( fid, '%3d %13s %8s %3d %10f %10f %10f %10f %10f %10d %8s %10f %10d %10d %10f\r\n', iteration, Inpimage, DESPtype, windowsize, RMSE_int, PSNR_int, EQP_int, EPI_int, SPD_int, nres_int, PUAlg, duration, resnumber, BClength, rmse_uW);
     %             fprintf( fid, '%5s \r\n', PUAlg);
             end
         end
