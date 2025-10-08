@@ -4,13 +4,9 @@
 % 1 - Despekling Algorithms
 % 2 - Phase Unwrapping Algorithms
 %
-% Dr. Emrah Onat (eonat87@yahoo.com)
+% Dr. Emrah Onat
 % 30.09.2025
 % 
-%
-% You can use the code if you cite our paper
-%
-% E. Onat and Y. Ozkazanc, “Improving InSAR-Based Digital Elevation Model Accuracy through SAR Interferogram Despeckling ”, TJRS, vol. 7, no. 2, pp. XX–XX, 2025, doi: 10.51489/tuzal.1234567.
 
 %% Main Code 
 
@@ -25,7 +21,7 @@ fid = fopen( 'results.txt', 'wt' );
 fprintf( fid, '%3s %13s %8s %3s %10s %10s %10s %10s %10s %10s %8s %10s %10s %10s %10s\r\n','#i', '#Input','Filter', 'WS', 'RMSE_int', 'PSNR_int', 'EQP_int', 'EPI_int', 'SPD_int', 'nres_int', '#PUAlg','Duration_PU', '#Residue', '#BranchCut', 'RMSE_PU');
 
 iteration = 0;
-for i = 5:5
+for i = 10:10
 %     fprintf( fid, '%61s\r\n','------------------------------------------------------------');
     %% Input Images
     % 1 - P00 - ifsar.512x512
@@ -52,7 +48,7 @@ for i = 5:5
     subplot(312);imagesc(corrimage);title('Input Correlation Map');
     subplot(313);mesh(surfimage);title('Groundtruth Unwrapped Map');
 
-    for j = 7:9
+    for j = 2:2
         %% Interferogram Despeckling
         % 0 - No Despeckling
         % 1 - Mean
@@ -70,28 +66,28 @@ for i = 5:5
 
         numberofDespAlgo = j;
 
-        for m = 5:2:5
+        for m = 13:4:13
             windowsize = m;
 
             % Despeckling
             [DESPtype desp_int] = DespGen(numberofDespAlgo, phaseimage, windowsize, fid);
             figure_map = figure;
-            imagesc(desp_int);title(['Despeckled Interferogram, WindowSize = ' num2str(windowsize) ', Algo Number = ' num2str(numberofDespAlgo)]);
+            imagesc(desp_int);title(['Despeckled Interferogram, WindowSize = ' num2str(windowsize) ', #Algo = ' DESPtype]);
             colormap gray;
     
-            name = string(date);
-            imgno = string(numberofinputimage);
-            winno = string(windowsize);
-            name=name+DESPtype+winno+imgno;
-            saveas(figure_map,name+"desp_int.svg")
+%             name = string(date);
+%             imgno = string(numberofinputimage);
+%             winno = string(windowsize);
+%             name=name+DESPtype+winno+imgno;
+%             saveas(figure_map,name+"desp_int.svg")
 
             % Calculation of Parameters
             [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(numberofinputimage, desp_int, fid);
-            maskimage = 1;
-            qualmap = 1;
+            maskimage = ones(size(desp_int));
+            qualmap = ones(size(desp_int));
             I = [iteration; i; j; m; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
     
-            for k = 1:1
+            for k = 0:19
                 %% Phase Unwrapping Algorithms
                 % 0 - Itoh Matlab
                 % 1 - Goldstein Matlab
@@ -114,13 +110,13 @@ for i = 5:5
                 % 18 - unwt
                 % 19 - HBP
                 
-                if k==7 && (i== 6 || i==7 || i==8 || i==1 || i==11)
+                if k==7 && (i== 6 || i==7 || i==8 || i==10 || i==1 || i==11)
                     continue;
                 end
                 if k==6 && (i==10)
                     continue;
                 end
-                if k==3 
+                if k==3 || k==10 || k==11
                     continue;
                 end
     
@@ -137,7 +133,7 @@ for i = 5:5
                 
                 figure
                 subplot(321);imagesc(phaseimage);title(['Input Phase Image, #Input = ' Inpimage]);
-                subplot(322);imagesc(desp_int);title(['Despeckled Interferogram, Window Size = ' num2str(windowsize) ', #Algo = ' DESPtype]);
+                subplot(322);imagesc(desp_int);title(['Despeckled Int, WS = ' num2str(windowsize) ', #Algo = ' DESPtype]);
                 subplot(323);imagesc(resmap);title(['Residue Map, #Res = ' num2str(resnumber)]);
                 subplot(324);imagesc(BCmap);title(['Branch-Cut Map, length = ' num2str(BClength)]);
                 subplot(325);imagesc(unwrappedmap);title(['Unwrapped Map, RMSE = ' num2str(rmse_uW)]);
