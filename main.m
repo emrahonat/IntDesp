@@ -4,9 +4,13 @@
 % 1 - Despekling Algorithms
 % 2 - Phase Unwrapping Algorithms
 %
-% Dr. Emrah Onat
+% Dr. Emrah Onat (eonat87@yahoo.com)
 % 30.09.2025
 % 
+%
+% You can use the code if you cite our paper
+%
+% E. Onat and Y. Ozkazanc, “Improving InSAR-Based Digital Elevation Model Accuracy through SAR Interferogram Despeckling ”, TJRS, vol. 7, no. 2, pp. XX–XX, 2025, doi: 10.51489/tuzal.1234567.
 
 %% Main Code 
 
@@ -21,7 +25,7 @@ fid = fopen( 'results.txt', 'wt' );
 fprintf( fid, '%3s %13s %8s %3s %10s %10s %10s %10s %10s %10s %8s %10s %10s %10s %10s\r\n','#i', '#Input','Filter', 'WS', 'RMSE_int', 'PSNR_int', 'EQP_int', 'EPI_int', 'SPD_int', 'nres_int', '#PUAlg','Duration_PU', '#Residue', '#BranchCut', 'RMSE_PU');
 
 iteration = 0;
-for i = 10:10
+for i = 5:5
 %     fprintf( fid, '%61s\r\n','------------------------------------------------------------');
     %% Input Images
     % 1 - P00 - ifsar.512x512
@@ -48,7 +52,7 @@ for i = 10:10
     subplot(312);imagesc(corrimage);title('Input Correlation Map');
     subplot(313);mesh(surfimage);title('Groundtruth Unwrapped Map');
 
-    for j = 2:2
+    for j = 7:9
         %% Interferogram Despeckling
         % 0 - No Despeckling
         % 1 - Mean
@@ -58,8 +62,12 @@ for i = 10:10
         % 5 - Lee
         % 6 - Kuan
         % 7 - Kuwahara
-        % 8 - NL InSAR (only Linux and Windows x32)
-        % 9 - InSAR-BM3D (only Linux)
+        % 8 - Goldstein
+        % 9 - Baran
+        % 10 - NL InSAR (only Linux and Windows x32)
+        % 11 - InSAR-BM3D (only Linux)
+        % 12 - MuLoG
+
         numberofDespAlgo = j;
 
         for m = 5:2:5
@@ -81,7 +89,7 @@ for i = 10:10
             [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(numberofinputimage, desp_int, fid);
             maskimage = 1;
             qualmap = 1;
-            I = [iteration; i; j; m; k; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
+            I = [iteration; i; j; m; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
     
             for k = 1:1
                 %% Phase Unwrapping Algorithms
