@@ -21,7 +21,7 @@ fid = fopen( 'results.txt', 'wt' );
 fprintf( fid, '%3s %13s %8s %3s %10s %10s %10s %10s %10s %10s %8s %10s %10s %10s %10s\r\n','#i', '#Input','Filter', 'WS', 'RMSE_int', 'PSNR_int', 'EQP_int', 'EPI_int', 'SPD_int', 'nres_int', '#PUAlg','Duration_PU', '#Residue', '#BranchCut', 'RMSE_PU');
 
 iteration = 0;
-for i = 10:10
+for i = 4:4
 %     fprintf( fid, '%61s\r\n','------------------------------------------------------------');
     %% Input Images
     % 1 - P00 - ifsar.512x512
@@ -41,32 +41,47 @@ for i = 10:10
     % 15 -P00 - numphant.150x100
     
     numberofinputimage = i;
-    [Inpimage, phaseimage, maskimage, corrimage, surfimage] = inputexamples(numberofinputimage, fid);
+    [Inpimage, phaseimage_noiseless, phaseimage, maskimage, corrimage, surfimage] = inputexamples(numberofinputimage, fid);
     
-    figure;
-    subplot(311);imagesc(phaseimage);title(['Input Phase Image, #Map = ' num2str(numberofinputimage)]);
-    subplot(312);imagesc(corrimage);title('Input Correlation Map');
-    subplot(313);mesh(surfimage);title('Groundtruth Unwrapped Map');
+%     figure;
+%     subplot(311);imagesc(phaseimage);title(['Input Phase Image, #Map = ' num2str(numberofinputimage)]);
+%     subplot(312);imagesc(corrimage);title('Input Correlation Map');
+%     subplot(313);mesh(surfimage);title('Groundtruth Unwrapped Map');
 
-    for j = 2:2
+    figure_map = figure; imagesc(phaseimage_noiseless);title('Groundtruth Interferogram');
+%     saveas(figure_map,"InterferogramGroundtruth.svg") % For Paper
+
+    surfimage = surfimage-min(min(surfimage)); surfimage = surfimage/max(max(surfimage)); 
+    figure_map = figure;mesh(surfimage);title('Groundtruth DEM');
+%     saveas(figure_map,"DEMGroundtruth.svg") % For Paper
+    
+    for j = 14:15
         %% Interferogram Despeckling
         % 0 - No Despeckling
         % 1 - Mean
         % 2 - Median
-        % 3 - Frost
-        % 4 - Modified Frost
-        % 5 - Lee
-        % 6 - Kuan
-        % 7 - Kuwahara
-        % 8 - Goldstein
-        % 9 - Baran
-        % 10 - NL InSAR (only Linux and Windows x32)
-        % 11 - InSAR-BM3D (only Linux)
-        % 12 - MuLoG
+        % 3 - Pivoting Median
+        % 4 - Frost
+        % 5 - Modified Frost
+        % 6 - Lee
+        % 7 - Kuan
+        % 8 - Kuwahara
+        % 9 - Goldstein
+        % 10 - Baran
+        % 11 - NL InSAR (only Linux and Windows x32)
+        % 12 - BM3D (only Linux)
+        % 13 - BM3D-ADMM
+        % 14 - PPB
+        % 15 - PPB-Ite
+
+
+        if j==16 || j==23 || j==36 || j==46
+            continue;
+        end
 
         numberofDespAlgo = j;
 
-        for m = 13:4:13
+        for m = 3:2:3
             windowsize = m;
 
             % Despeckling
@@ -82,12 +97,12 @@ for i = 10:10
 %             saveas(figure_map,name+"desp_int.svg")
 
             % Calculation of Parameters
-            [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(numberofinputimage, desp_int, fid);
-            maskimage = ones(size(desp_int));
-            qualmap = ones(size(desp_int));
+            [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(phaseimage_noiseless, phaseimage, desp_int);
+%             maskimage = ones(size(desp_int));
+            qualmap = corrimage;
             I = [iteration; i; j; m; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
     
-            for k = 0:19
+            for k = 17:17
                 %% Phase Unwrapping Algorithms
                 % 0 - Itoh Matlab
                 % 1 - Goldstein Matlab
@@ -122,12 +137,14 @@ for i = 10:10
     
                 numberofPUAlgo = k;
                 % Phase Unwrapping
+%                 desp_int = desp_int .* maskimage;
                 tic;
                 [PUAlg, resmap, BCmap, unwrappedmap] = PUalgorithms(numberofPUAlgo, desp_int, maskimage, qualmap);
                 duration = toc;
                 resnumber = length(find(resmap));
                 BClength = sum(sum(BCmap));
                 unwrappedmap = unwrappedmap-min(min(unwrappedmap)); unwrappedmap = unwrappedmap/max(max(unwrappedmap)); 
+                unwrappedmap = unwrappedmap .* maskimage;
                 surfimage = surfimage-min(min(surfimage)); surfimage = surfimage/max(max(surfimage)); 
                 rmse_uW = rms(rms(surfimage(1:size(unwrappedmap,1),1:size(unwrappedmap,2))-unwrappedmap));
                 
@@ -138,6 +155,13 @@ for i = 10:10
                 subplot(324);imagesc(BCmap);title(['Branch-Cut Map, length = ' num2str(BClength)]);
                 subplot(325);imagesc(unwrappedmap);title(['Unwrapped Map, RMSE = ' num2str(rmse_uW)]);
                 subplot(326);mesh(unwrappedmap);title(['Unwrapped Map, PU Algo = ' PUAlg]);
+
+                figure_map = figure; imagesc(desp_int);title(['Noisy Interferogram, RMSE_1 = ' num2str(RMSE_int) ' , Filter = ' DESPtype]);
+                saveas(figure_map,"Interferogram"+DESPtype+".svg")
+
+                figure_map = figure; mesh(unwrappedmap);title(['DEM, RMSE_2 = ' num2str(rmse_uW) ' , Filter = ' DESPtype]);
+                saveas(figure_map,"DEM"+DESPtype+".svg");
+
                 
                 iteration = iteration +1;
                 A = [iteration; i; j; m; k; resnumber; BClength; rmse_uW; duration];
