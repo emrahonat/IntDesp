@@ -7,7 +7,7 @@
 % 2 - Phase Unwrapping Algorithms
 %
 % Dr. Emrah Onat
-% 30.09.2025
+% 30.10.2025
 % 
 
 %% Main Code 
@@ -59,7 +59,7 @@ for i = 4:4
 %     figure_map = figure;mesh(surfimage);title('Groundtruth DEM');
 %     saveas(figure_map,"DEMGroundtruth.svg") % For Paper
     
-    for j = 0:16
+    for j = 17:18
         %% Interferogram Despeckling
         % 0 - No Despeckling
         % 1 - Mean
@@ -78,6 +78,8 @@ for i = 4:4
         % 14 - MuLoG-BM3D
         % 15 - BM3D (only Linux)
         % 16 - BM3D-ADMM
+        % 17 - InSAR-BM3D Step-1
+        % 18 - InSAR-BM3D Step-2
 
         if j==21 || j==23 || j==36 || j==46
             continue;
@@ -85,7 +87,7 @@ for i = 4:4
 
         numberofDespAlgo = j;
 
-        for m = 9:2:9
+        for m = 3:2:3
             windowsize = m;
 
             % Despeckling
@@ -106,7 +108,7 @@ for i = 4:4
 
             figure_map = figure;
             imagesc(desp_int);title(['Despeckled Interferogram, PSNR = ' num2str(PSNR_intr) ' , Filter = ' DESPtype]);
-            saveas(figure_map,"DespInt"+DESPtype+".svg");
+            saveas(figure_map,"DespInt_"+DESPtype+".svg");
 %             colormap gray;
     
 %             name = string(date);
@@ -174,7 +176,7 @@ for i = 4:4
                 
                 rmse_uWr = round(rmse_uW,3);
                 figure_map = figure; mesh(unwrappedmap);title(['DEM, RMSE_2 = ' num2str(rmse_uWr) ' , Filter = ' DESPtype]);
-                saveas(figure_map,"DEM"+DESPtype+".svg");
+                saveas(figure_map,"DEM_"+DESPtype+".svg");
 
                 
                 iteration = iteration +1;
