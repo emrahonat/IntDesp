@@ -1,11 +1,13 @@
-%% SAR Interferogram Despekling Algorithms
+%% Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Despeckling
+
+%% Interferogram Despekling Algorithms
 % 
 % 0 - Input Images (Interferograms)
 % 1 - Despekling Algorithms
 % 2 - Phase Unwrapping Algorithms
 %
 % Dr. Emrah Onat
-% 28.10.2025
+% 30.09.2025
 % 
 
 %% Main Code 
@@ -20,7 +22,7 @@ disp('--- Algorithms ---');
 fid = fopen( 'results.txt', 'wt' );
 fprintf( fid, '%3s %13s %8s %3s %10s %10s %10s %10s %10s %10s %8s %10s %10s %10s %10s\r\n','#i', '#Input','Filter', 'WS', 'RMSE_int', 'PSNR_int', 'EQP_int', 'EPI_int', 'SPD_int', 'nres_int', '#PUAlg','Duration_PU', '#Residue', '#BranchCut', 'RMSE_PU');
 
-aa = [];
+aa = [];a1 = [];a2 = [];a3 = [];a4 = [];a5 = [];a6 = [];
 
 iteration = 0;
 for i = 4:4
@@ -57,7 +59,7 @@ for i = 4:4
 %     figure_map = figure;mesh(surfimage);title('Groundtruth DEM');
 %     saveas(figure_map,"DEMGroundtruth.svg") % For Paper
     
-    for j = 10:10
+    for j = 0:16
         %% Interferogram Despeckling
         % 0 - No Despeckling
         % 1 - Mean
@@ -77,34 +79,41 @@ for i = 4:4
         % 15 - BM3D (only Linux)
         % 16 - BM3D-ADMM
 
-
-
         if j==21 || j==23 || j==36 || j==46
             continue;
         end
 
         numberofDespAlgo = j;
 
-        for m = 3:2:3
+        for m = 9:2:9
             windowsize = m;
 
             % Despeckling
-            [DESPtype desp_int] = DespGen(numberofDespAlgo, phaseimage, windowsize, fid);
+            [DESPtype desp_int] = DespGen(numberofDespAlgo, numberofinputimage, phaseimage, windowsize, fid);
+            
+            % Calculation of Parameters
+            [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(phaseimage_noiseless, phaseimage, desp_int);
+%             maskimage = ones(size(desp_int));
+            qualmap = ones(size(desp_int));
+            I = [iteration; i; j; m; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
+
+            RMSE_intr = round(RMSE_int,2); a1 = [a1 RMSE_intr];
+            PSNR_intr = round(PSNR_int,2); a2 = [a2 PSNR_intr];
+            EQP_intr = round(EQP_int,2); a3 = [a3 EQP_intr];
+            EPI_intr = round(EPI_int,2); a4 = [a4 EPI_intr];
+            a5 = [a5 SPD_int];
+            a6 = [a6 nres_int];
+
             figure_map = figure;
-            imagesc(desp_int);title(['Despeckled Interferogram, WindowSize = ' num2str(windowsize) ', #Algo = ' DESPtype]);
-            colormap gray;
+            imagesc(desp_int);title(['Despeckled Interferogram, PSNR = ' num2str(PSNR_intr) ' , Filter = ' DESPtype]);
+            saveas(figure_map,"DespInt"+DESPtype+".svg");
+%             colormap gray;
     
 %             name = string(date);
 %             imgno = string(numberofinputimage);
 %             winno = string(windowsize);
 %             name=name+DESPtype+winno+imgno;
 %             saveas(figure_map,name+"desp_int.svg")
-
-            % Calculation of Parameters
-            [RMSE_int PSNR_int EQP_int EPI_int SPD_int nres_int] = param_calculations_int(phaseimage_noiseless, phaseimage, desp_int);
-%             maskimage = ones(size(desp_int));
-            qualmap = ones(size(desp_int));
-            I = [iteration; i; j; m; RMSE_int; PSNR_int; EQP_int; EPI_int; SPD_int; nres_int];
     
             for k = 8:8
                 %% Phase Unwrapping Algorithms
@@ -162,9 +171,10 @@ for i = 4:4
 
 %                 figure_map = figure; imagesc(desp_int);title(['Noisy Interferogram, RMSE_1 = ' num2str(RMSE_int) ' , Filter = ' DESPtype]);
 %                 saveas(figure_map,"Interferogram"+DESPtype+".svg")
-
-                figure_map = figure; mesh(unwrappedmap);title(['DEM, RMSE_2 = ' num2str(rmse_uW) ' , Filter = ' DESPtype]);
-%                 saveas(figure_map,"DEM"+DESPtype+".svg");
+                
+                rmse_uWr = round(rmse_uW,3);
+                figure_map = figure; mesh(unwrappedmap);title(['DEM, RMSE_2 = ' num2str(rmse_uWr) ' , Filter = ' DESPtype]);
+                saveas(figure_map,"DEM"+DESPtype+".svg");
 
                 
                 iteration = iteration +1;
@@ -172,12 +182,14 @@ for i = 4:4
     
                 fprintf( fid, '%3d %13s %8s %3d %10f %10f %10f %10f %10f %10d %8s %10f %10d %10d %10f\r\n', iteration, Inpimage, DESPtype, windowsize, RMSE_int, PSNR_int, EQP_int, EPI_int, SPD_int, nres_int, PUAlg, duration, resnumber, BClength, rmse_uW);
     %             fprintf( fid, '%5s \r\n', PUAlg);
-                aa = [aa rmse_uW];
+                aa = [aa rmse_uWr];
 
             end
         end
     end
 end
+
+allresults = [a1;a2;a3;a4;a5;a6;aa];
 
 fclose(fid);
 open('results.txt');
