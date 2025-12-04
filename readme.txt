@@ -4,7 +4,7 @@ Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogr
 
 Overview
 ---------
-This repository currently includes only the main.m file & inputexamples.m.
+This repository currently includes main.m file , inputexamples.m & noisy/noiseless input images (Longs & Peaks).
 The purpose of main file is to provide an overview of the academic work and its implementation framework.
 All MATLAB files related to the interferogram despeckling algorithms developed in this study will be uploaded after the corresponding paper is accepted for publication.
 
