@@ -1,5 +1,5 @@
 % Dr. Emrah Onat
-% 31.10.2025
+% 10.12.2025
 %  
 % 
 
@@ -17,6 +17,7 @@ switch ex
         G = reshape(G,512,512);
         fclose(fid);
         G = 2*pi*G/max(max(abs(G)))-pi;
+        G_noiseless = G;
         M = ones(size(G));
         C = ones(size(G));
         S = zeros(size(G));
@@ -29,6 +30,7 @@ switch ex
         G = reshape(G,256,256);
         fclose(fid);
         G = 2*pi*G/max(max(abs(G)))-pi;
+        G_noiseless = G;
         M = ones(size(G));
         C = ones(size(G));
         S = zeros(size(G));
@@ -140,6 +142,7 @@ switch ex
         G = reshape(G,257,257);
         fclose(fid);
         G = 2*pi*G/max(max(abs(G)))-pi;
+        G_noiseless = G;
         M = ones(size(G));
         C = ones(size(G));
         S = zeros(size(G));
@@ -147,12 +150,13 @@ switch ex
         disp('----------------- peaks.101x101 -----------------');fprintf('\n');
         fprintf( fidx, '%61s\r\n','--------------------------------peaks.101x101-------------------------------------');
         I = 'peaks101';
-        area_range = 101;
+        area_range = 256;
         [X,Y,S] = peaks(area_range);
         S = abs(S);
         M = ones(size(S));
         C = ones(size(S));
         G = mod(S+pi,2*pi)-pi;
+        G_noiseless = G;
     case 10 % from Constanini code
         disp('----------------- noisypeaks.101x101 -----------------');fprintf('\n');
         fprintf( fidx, '%61s\r\n','--------------------------------noisypeaks.101x101-------------------------------------');
@@ -252,6 +256,33 @@ switch ex
         M = ones(size(G));
         C = ones(size(G));
         S = zeros(size(G));
+    case 16 % from 
+        disp('----------------- etna.1024x1024 -----------------');fprintf('\n');
+        fprintf( fidx, '%61s\r\n','--------------------------------etna.1024x1024-------------------------------------');
+        I = 'etna1024';
+        %etna1024 = Flatten_Interferogram(1:1024,1500:2523);
+        load('etna1024.mat');
+%         load('Flatten_Interferogram_Etna');
+%         etna1024 = Flatten_Interferogram(512:512+512,2000:2512);
+        G = etna1024;
+        G_noiseless = G;
+        M = ones(size(G));
+        load('Etna_coherencemap.mat');
+        CoherenceMap = CoherenceMap';
+        C = CoherenceMap(1:1024,1500:2523);
+%         C = CoherenceMap(512:512+512,2000:2512);
+        S = zeros(size(G));   
+    case 17 % from 
+        disp('----------------- etna.2000x5198 -----------------');fprintf('\n');
+        fprintf( fidx, '%61s\r\n','--------------------------------etna.2000x5198-------------------------------------');
+        I = 'etna2000';
+        load('Flatten_Interferogram_Etna.mat');
+        G = Flatten_Interferogram;
+        G_noiseless = Flatten_Interferogram;
+        M = ones(size(G));
+        load('Etna_coherencemap.mat');
+        C = CoherenceMap';
+        S = zeros(size(G));  
 end
         
 end
