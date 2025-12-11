@@ -7,7 +7,7 @@
 % 2 - Phase Unwrapping Algorithms
 %
 % Dr. Emrah Onat
-% 30.10.2025
+% 12.12.2025
 % 
 
 %% Main Code 
@@ -28,21 +28,9 @@ iteration = 0;
 for i = 4:4
 %     fprintf( fid, '%61s\r\n','------------------------------------------------------------');
     %% Input Images
-    % 1 - P00 - ifsar.512x512
-    % 2 - P00 - head.256x256
-    % 3 - P00 - knee.256x256
+
     % 4 - PCS - longs.152x458 GT
-    % 5 - PCS - isola.157x458 GT
-    % 6 - P0S - shear.257x257
-    % 7 - P0S - spiral.257x257
-    % 8 - P00 - noise.257x257
-    % 9 - P00 - peaks.101x101
     % 10 -P0S - noisypeaks.101x101
-    % 11 -P00 - volcano.1591x561
-    % 12 -P0S - gaussele.100x100
-    % 13 -P0S - gaussmask.150x100
-    % 14 -P0S - gaussmask2.150x100
-    % 15 -P00 - numphant.150x100
     
     numberofinputimage = i;
     [Inpimage, phaseimage_noiseless, phaseimage, maskimage, corrimage, surfimage] = inputexamples(numberofinputimage, fid);
@@ -119,25 +107,9 @@ for i = 4:4
     
             for k = 8:8
                 %% Phase Unwrapping Algorithms
-                % 0 - Itoh Matlab     (1D Phase Unwrapping Algorithm)
+
                 % 1 - Goldstein Matlab
-                % 2 - Goldstein C/C++
-                % 3 - Quality Guided Matlab (Very Slow)
-                % 4 - Quality Guided C/C++
-                % 5 - Mask Cut C/C++
-                % 6 - Flynn C/C++
-                % 7 - PUMA
                 % 8 - SPUD
-                % 9 - fp-Matlab
-                % 10 - fp-wff-Matlab
-                % 11 - fp-wfr-Matlab
-                % 12 - Constantinini
-                % 13 - 2D-SRNCP
-                % 14 - 2D-SRNCP-V2
-                % 15 - Unweighted LS
-                % 16 - Lp Norm
-                % 17 - PCG
-                % 18 - unwt
                 % 19 - HBP    (My Algo: "Phase unwrapping via hierarchical and balanced residue partitioning")
                 
                 if k==7 && (i== 6 || i==7 || i==8 || i==10 || i==1 || i==11)
