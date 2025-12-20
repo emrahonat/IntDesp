@@ -2,26 +2,26 @@
 Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Filtering
 ============================================================================================
 
-Overview
+Abstract
 ---------
-This repository currently includes main.m file , inputexamples.m & noisy/noiseless input images (Longs & Peaks).
-The purpose of main file is to provide an overview of the academic work and its implementation framework.
-All MATLAB files related to the interferogram filtering algorithms developed in this study will be uploaded after the corresponding paper is accepted for publication.
 
-Contents
+
+Keywords
 --------
-main.m: Demonstrates the general structure of the interferogram filtering process.
-Additional MATLAB scripts and functions will be made publicly available after the paper’s acceptance.
+Synthetic Aperture Radar Interferometry (InSAR/IFSAR), Interferogram, Despeckling, Denoising, Phase map filtering
 
-Usage
------
-The current code is intended for demonstration purposes only.
-After the paper is accepted and the full implementation is released, all scripts may be used freely for academic and non-commercial research, provided that proper citation is given.
 
 Citation
 --------
-If you use or refer to this work, please cite the forthcoming paper once it is published.
-A complete BibTeX entry will be provided here after publication.
+If you use or refer to this work, please cite our paper below.
+
+
+
+
+Content
+-------
+This repository currently includes main.m file , inputexamples.m & noisy/noiseless input images (Longs & Peaks).
+The purpose of main file is to provide an overview of the academic work and its implementation framework.
 
 License
 -------
