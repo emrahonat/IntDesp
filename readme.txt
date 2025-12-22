@@ -4,19 +4,26 @@ Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogr
 
 Abstract
 ---------
-
+This study investigates the influence of various interferogram filtering techniques on the accuracy
+of Digital Elevation Models (DEMs) generated through Synthetic Aperture Radar Interferometry (InSAR). 
+While most studies in the literature evaluate filter performance solely based on interferogram-domain 
+metrics, this work extends the analysis to assess how denoising affects the accuracy of the final DEM product. 
+Both conventional filters—such as mean, median, pivoting median, Lee, Frost, Modified Frost, Kuan, Kuwahara, 
+and Baran—and advanced algorithms including NL-InSAR, PPB, MuLoG, BM3D, and InSAR-BM3D are systematically compared. 
+Simulations are performed on both synthetic and real SAR datasets to ensure reliability and generalizability. 
+The filters are evaluated using metrics such as Peak Signal-to-Noise Ratio (PSNR), Edge Preserving Index (EPI), 
+Sum of Phase Differences (SPD), and number of residues, while DEM accuracy is quantified through Root Mean Square 
+Error (RMSE). The results aim to identify the most effective denoising strategies for enhancing DEM generation 
+and to provide guidance for future InSAR-based terrain mapping applications.
 
 Keywords
 --------
 Synthetic Aperture Radar Interferometry (InSAR/IFSAR), Interferogram, Despeckling, Denoising, Phase map filtering
 
-
 Citation
 --------
-If you use or refer to this work, please cite our paper below.
-
-
-
+E. Onat and Y. Ozkazanc, “Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Filtering”, 
+Turkish Journal of Remote Sensing, vol. 8, no. X, pp. AA-BB, 2026, doi: 10.51489/tuzal.
 
 Content
 -------
