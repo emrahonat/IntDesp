@@ -1,3 +1,5 @@
+%% Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Filtering
+%
 % Dr. Emrah Onat
 % 10.12.2025
 %  
@@ -283,6 +285,6 @@ switch ex
         load('Etna_coherencemap.mat');
         C = CoherenceMap';
         S = zeros(size(G));  
-end
+	end
         
 end
