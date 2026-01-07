@@ -40,3 +40,25 @@ Contact
 For questions or collaboration inquiries, please contact:
 Dr. Emrah Onat
 eonat87 at yahoo.com
+
+
+Algorithms
+----------
+01 - Mean
+02 - Median
+03 - Pivoting Median
+04 - Frost
+05 - Modified Frost
+06 - Lee
+07 - Kuan
+08 - Kuwahara
+09 - Goldstein
+10 - Baran
+11 - NL InSAR (only Linux and Windows x32)
+12 - PPB
+13 - PPB-Ite
+14 - MuLoG-BM3D
+15 - BM3D (only Linux)
+16 - BM3D-ADMM
+17 - InSAR-BM3D Step-1
+18 - InSAR-BM3D Step-2
