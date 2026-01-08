@@ -1,14 +1,12 @@
-%% Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Despeckling
+%% Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Filtering
 
-%% Interferogram Despekling Algorithms
-% 
 % 0 - Input Images (Interferograms)
 % 1 - Despekling Algorithms
 % 2 - Phase Unwrapping Algorithms
-%
+
 % Dr. Emrah Onat
-% 12.12.2025
-% 
+% 01.01.2026
+
 
 %% Main Code 
 
