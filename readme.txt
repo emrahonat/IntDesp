@@ -2,6 +2,7 @@
 Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Filtering
 ============================================================================================
 
+
 Abstract
 ---------
 This study investigates the influence of various interferogram filtering techniques on the accuracy
@@ -16,24 +17,29 @@ Sum of Phase Differences (SPD), and number of residues, while DEM accuracy is qu
 Error (RMSE). The results aim to identify the most effective denoising strategies for enhancing DEM generation 
 and to provide guidance for future InSAR-based terrain mapping applications.
 
+
 Keywords
 --------
 Synthetic Aperture Radar Interferometry (InSAR/IFSAR), Interferogram, Despeckling, Denoising, Phase map filtering
+
 
 Citation
 --------
 E. Onat and Y. Ozkazanc, “Improving InSAR-Based Digital Elevation Model Accuracy through InSAR Interferogram Filtering”, 
 Turkish Journal of Remote Sensing, vol. 8, no. X, pp. AA-BB, 2026, doi: 10.51489/tuzal.
 
+
 Content
 -------
 This repository currently includes main.m file , inputexamples.m & noisy/noiseless input images (Longs & Peaks).
 The purpose of main file is to provide an overview of the academic work and its implementation framework.
 
+
 License
 -------
 This repository will be released under an academic open-use license after publication.
 Until then, redistribution or modification of the included code is not permitted without the author’s consent.
+
 
 Contact
 -------
